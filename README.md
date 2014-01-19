@@ -22,11 +22,17 @@ Basic usage:
      bounce.type  #  "Permanent Failure", "Persistent Transient Failure", "Success" -- BounceEmail::TYPE_HARD_FAIL, TYPE_SOFT_FAIL, TYPE_SUCCESS
 
 
+## Compatibility
+
+Compatible with Ruby 1.8.7, 1.9.x, 2.0.0 and 2.1.0.
+
 ## REQUIREMENTS:
 
-Ruby 1.8.7 or 1.9.x and the [mail](http://rubygems.org/gems/mail) Ruby gem are required.
-The gem is used for primary bounce handling, which catches about 50% of all bounces.
-For most other bounces, this gem comes in. See discussion here: [https://github.com/mikel/mail/issues/103](https://github.com/mikel/mail/issues/103)
+[mail](http://rubygems.org/gems/mail) gem is required with `bounce_email` gem.
+The `mail` gem is used for primary bounce handling, which catches about 50% of
+all bounces. `bounce_email` tries to catch remaining bounce emails.
+
+See discussion here: [https://github.com/mikel/mail/issues/103](https://github.com/mikel/mail/issues/103)
 
 ## Other implementations:
 
