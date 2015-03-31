@@ -3,7 +3,7 @@
 This Ruby library is for determining the bounce type of an email message. It determines whether the bounce is hard or soft, if is an "out of office mail", etc.
 
 ## Build Status
-[![Build Status](https://secure.travis-ci.org/mitio/bounce_email.png)](http://travis-ci.org/mitio/bounce_email)
+[![Build Status](https://api.travis-ci.org/livebg/bounce_email.png)](https://travis-ci.org/livebg/bounce_email)
 
 ## SYNOPSIS:
 
