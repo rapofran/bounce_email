@@ -5,6 +5,11 @@ module BounceEmail
   TYPE_HARD_FAIL = 'Permanent Failure'
   TYPE_SOFT_FAIL = 'Persistent Transient Failure'
   TYPE_SUCCESS   = 'Success'
+  INLINE_MESSAGE_DELIMITERS = [
+    'Original message',
+    'Below this line is a copy of the message',
+    'Message header follows'
+  ]
 
   #qmail
   # Status codes are defined in rfc3463, http://www.ietf.org/rfc/rfc3463.txt
@@ -212,15 +217,29 @@ module BounceEmail
       false
     end
 
-    def get_original_mail(mail) #worked alright for me, for sure this as to be extended
-      parts = mail.body.to_s.split(/--- Below this line is a copy of the message.(\r\n\r\n|\n\n)/)
-      if parts.size > 1
-        ::Mail.new(parts.last)
-      elsif mail.parts
-        ::Mail.new(mail.parts[2].body)
+    def get_original_mail(mail) #worked alright for me, for sure this has to be extended
+      if mail.multipart?
+        ::Mail.new(mail.parts.last)
+      elsif i = index_of_original_message_delimiter(mail)
+        ::Mail.new(extract_original_message_after(mail, i))
+      else
+        nil
       end
     rescue => e
+      puts e
       nil
+    end
+
+    def index_of_original_message_delimiter(mail)
+      INLINE_MESSAGE_DELIMITERS.find_index { |delimiter| self.body.to_s.include? delimiter }
+    end
+
+    def extract_original_message_after(mail, delimiter_index)
+      delimiter = INLINE_MESSAGE_DELIMITERS[delimiter_index]
+      message = mail.body.to_s.split(/^.*#{delimiter}.*$/).last
+      if message.match(/^.*End of message.*$/)
+        message.split(/^.*End of message.*$/).first.strip
+      end
     end
   end
 end
