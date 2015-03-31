@@ -1,15 +1,16 @@
-# encoding: UTF-8
+# encoding: utf-8
 require 'mail'
 
 module BounceEmail
   TYPE_HARD_FAIL = 'Permanent Failure'
   TYPE_SOFT_FAIL = 'Persistent Transient Failure'
   TYPE_SUCCESS   = 'Success'
-  INLINE_MESSAGE_DELIMITERS = [
+  INLINE_MESSAGE_BEGIN_DELIMITERS = [
     'Original message',
-    'Below this line is a copy of the message',
+    'Below this line is a copy of the message.',
     'Message header follows'
-  ]
+  ].map { |delimiter| Regexp.new(/^[-\s]*#{delimiter}[\s-]*$/) }
+  INLINE_MESSAGE_END_DELIMITER = /^[-\s]*End of message[\s-]*$/
 
   #qmail
   # Status codes are defined in rfc3463, http://www.ietf.org/rfc/rfc3463.txt
@@ -221,25 +222,20 @@ module BounceEmail
       if mail.multipart?
         ::Mail.new(mail.parts.last)
       elsif i = index_of_original_message_delimiter(mail)
-        ::Mail.new(extract_original_message_after(mail, i))
-      else
-        nil
+        ::Mail.new(extract_original_message_after_delimiter(mail, i))
       end
     rescue => e
-      puts e
       nil
     end
 
     def index_of_original_message_delimiter(mail)
-      INLINE_MESSAGE_DELIMITERS.find_index { |delimiter| self.body.to_s.include? delimiter }
+      INLINE_MESSAGE_BEGIN_DELIMITERS.find_index { |delimiter| self.body.to_s.match delimiter }
     end
 
-    def extract_original_message_after(mail, delimiter_index)
-      delimiter = INLINE_MESSAGE_DELIMITERS[delimiter_index]
-      message = mail.body.to_s.split(/^.*#{delimiter}.*$/).last
-      if message.match(/^.*End of message.*$/)
-        message.split(/^.*End of message.*$/).first.strip
-      end
+    def extract_original_message_after_delimiter(mail, delimiter_index)
+      delimiter = INLINE_MESSAGE_BEGIN_DELIMITERS[delimiter_index]
+      message = mail.body.to_s.split(delimiter).last
+      message.split(INLINE_MESSAGE_END_DELIMITER).first.strip if message.match(INLINE_MESSAGE_END_DELIMITER)
     end
   end
 end
