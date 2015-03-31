@@ -107,11 +107,27 @@ class BounceEmailTest < Test::Unit::TestCase
     assert_not_nil bounce.original_mail
   end
 
-  #Test regexp in when parsing the original email
-  def test_multipart
-   bounce = test_bounce('tt_bounce_25')
-    assert bounce.bounced?
-    assert_not_nil bounce.original_mail
+  def test_original_message_with_multipart_mails
+    multipart_mails = %w(03 04 05 07 10 11 13 15 16 23 24)
+    multipart_mails.map do |file|
+      mail = File.join(File.dirname(__FILE__), 'bounces', "tt_bounce_#{file}.txt")
+      bounce = BounceEmail::Mail.new Mail.read(mail)
+      assert_not_nil bounce.original_mail
+    end
+  end
+
+  def test_original_message_without_inline_original_message
+    bounce = test_bounce('tt_bounce_01')
+    assert_nil bounce.original_mail
+  end
+
+  def test_original_message_with_inline_original_message
+    mails_with_inline_original_message = %w(06 08 09 12_soft 14 17 18 19 20 21 22 25)
+    mails_with_inline_original_message.map do |file|
+      mail = File.join(File.dirname(__FILE__), 'bounces', "tt_bounce_#{file}.txt")
+      bounce = BounceEmail::Mail.new Mail.read(mail)
+      assert_not_nil bounce.original_mail
+    end
   end
 
   private
