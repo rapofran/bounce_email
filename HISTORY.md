@@ -1,3 +1,7 @@
+## 0.2.3
+
+* add support for Gmail bounces (@saghaulor, livebg/bounce_email#4)
+
 ## 0.2.2
 
 * fix a failure when an email has no subject header
