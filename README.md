@@ -2,7 +2,6 @@
 
 This Ruby library is for determining the bounce type of an email message. It determines whether the bounce is hard or soft, if is an "out of office mail", etc.
 
-## Build Status
 [![Build Status](https://api.travis-ci.org/livebg/bounce_email.png)](https://travis-ci.org/livebg/bounce_email)
 
 ## SYNOPSIS:
@@ -24,7 +23,9 @@ Basic usage:
 
 ## Compatibility
 
-Compatible with Ruby 1.8.7, 1.9.x, 2.0.0 and 2.1.0.
+Compatible with Ruby 1.9.x, 2.0.0, 2.1.0, and 2.2.0.
+
+It is no longer tested under 1.8.7, but it should work there as well, if you use it with an older version of the `mime-types` gem (from the 1.x branch). `mime-types` is a dependency of the `mail` gem, which currently works with `mime-types` 1.6+, so it should be possible.
 
 ## REQUIREMENTS:
 
