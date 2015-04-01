@@ -16,12 +16,9 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  ["mail"].each do |gem|
-    s.add_dependency *gem.split(' ')
-  end
+  s.add_dependency 'mail'
 
-  ["rake"].each do |gem|
-    s.add_development_dependency *gem.split(' ')
-  end
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'test-unit'if RUBY_VERSION >= '2.2.0'
 end
 
