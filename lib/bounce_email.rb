@@ -220,12 +220,12 @@ module BounceEmail
 
     def get_original_mail(mail) #worked alright for me, for sure this has to be extended
       original =
-      if mail.multipart?
-        ::Mail.new(mail.parts.last)
-      elsif i = index_of_original_message_delimiter(mail)
-        ::Mail.new(extract_original_message_after_delimiter(mail, i))
-      end
-      extract_and_assign_fields_from_original_mail(original) if original
+        if mail.multipart?
+          ::Mail.new(mail.parts.last)
+        elsif i = index_of_original_message_delimiter(mail)
+          ::Mail.new(extract_original_message_after_delimiter(mail, i))
+        end
+      return extract_and_assign_fields_from_original_mail(original) if original
     rescue => e
       nil
     end
@@ -241,36 +241,25 @@ module BounceEmail
     end
 
     def extract_and_assign_fields_from_original_mail(mail)
-      extract_and_assign_message_id(mail) if mail.message_id.nil?
-      extract_and_assign_from(mail) if mail.from.nil?
-      extract_and_assign_to(mail) if mail.to.nil?
-      extract_and_assign_subject(mail) if mail.subject.nil?
+      if mail.message_id.nil?
+        mail.add_message_id extract_field_from(mail, 'Message-ID:')
+      end
+
+      mail.from ||= extract_field_from(mail, 'From:')
+      mail.to ||= extract_field_from(mail, 'To:')
+      mail.subject ||= extract_field_from(mail, 'Subject:')
+
       mail
     end
 
-    def extract_and_assign_message_id(mail)
-      value = extract_field(mail, 'Message-ID:')
-      mail.add_message_id(value)
+    def extract_field_from(mail, field_name)
+      lines = original_mail_body_lines(mail)
+      field = lines.detect { |line| line.match field_name }
+      field.split(':', 2).last.strip if field
     end
 
-    def extract_and_assign_to(mail)
-      value = extract_field(mail, 'To:')
-      mail.to = value
-    end
-
-    def extract_and_assign_from(mail)
-      value = extract_field(mail, 'From:')
-      mail.from = value
-    end
-
-    def extract_and_assign_subject(mail)
-      value = extract_field(mail, 'Subject:')
-      mail.subject = value
-    end
-
-    def extract_field(mail, field_name)
-      field = mail.body.to_s.split(/[\n|\r\n]+/).detect { |line| line.match field_name }
-      field.split(':').last.strip if field
+    def original_mail_body_lines(mail)
+      @original_mail_body_lines ||= mail.body.to_s.split(/\R+/)
     end
   end
 end
