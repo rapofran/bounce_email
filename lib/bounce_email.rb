@@ -259,7 +259,7 @@ module BounceEmail
     end
 
     def original_mail_body_lines(mail)
-      @original_mail_body_lines ||= mail.body.to_s.split(/\R+/)
+      @original_mail_body_lines ||= mail.body.to_s.split(/(?:\r\n|\n)+/)
     end
   end
 end
