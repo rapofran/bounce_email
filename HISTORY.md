@@ -1,3 +1,8 @@
+## 0.2.4
+
+* Parse and reassign message-ID, to, from, and subject from original mail
+  (@saghaulor, livebg/bounce_email#5)
+
 ## 0.2.3
 
 * add support for Gmail bounces (@saghaulor, livebg/bounce_email#4)
