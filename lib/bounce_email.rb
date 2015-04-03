@@ -219,11 +219,13 @@ module BounceEmail
     end
 
     def get_original_mail(mail) #worked alright for me, for sure this has to be extended
-      if mail.multipart?
-        ::Mail.new(mail.parts.last)
-      elsif i = index_of_original_message_delimiter(mail)
-        ::Mail.new(extract_original_message_after_delimiter(mail, i))
-      end
+      original =
+        if mail.multipart?
+          ::Mail.new(mail.parts.last)
+        elsif i = index_of_original_message_delimiter(mail)
+          ::Mail.new(extract_original_message_after_delimiter(mail, i))
+        end
+      return extract_and_assign_fields_from_original_mail(original) if original
     rescue => e
       nil
     end
@@ -236,6 +238,28 @@ module BounceEmail
       delimiter = INLINE_MESSAGE_BEGIN_DELIMITERS[delimiter_index]
       message = mail.body.to_s.split(delimiter).last
       message.split(INLINE_MESSAGE_END_DELIMITER).first.strip if message.match(INLINE_MESSAGE_END_DELIMITER)
+    end
+
+    def extract_and_assign_fields_from_original_mail(mail)
+      if mail.message_id.nil?
+        mail.add_message_id extract_field_from(mail, 'Message-ID:')
+      end
+
+      mail.from ||= extract_field_from(mail, 'From:')
+      mail.to ||= extract_field_from(mail, 'To:')
+      mail.subject ||= extract_field_from(mail, 'Subject:')
+
+      mail
+    end
+
+    def extract_field_from(mail, field_name)
+      lines = original_mail_body_lines(mail)
+      field = lines.detect { |line| line.match field_name }
+      field.split(':', 2).last.strip if field
+    end
+
+    def original_mail_body_lines(mail)
+      @original_mail_body_lines ||= mail.body.to_s.split(/(?:\r\n|\n)+/)
     end
   end
 end

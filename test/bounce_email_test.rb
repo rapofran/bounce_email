@@ -113,6 +113,9 @@ class BounceEmailTest < Test::Unit::TestCase
       mail = File.join(File.dirname(__FILE__), 'bounces', "tt_bounce_#{file}.txt")
       bounce = BounceEmail::Mail.new Mail.read(mail)
       assert_not_nil bounce.original_mail
+      assert_not_nil bounce.original_mail.message_id
+      assert_not_nil bounce.original_mail.to
+      assert_not_nil bounce.original_mail.from
     end
   end
 
@@ -127,7 +130,15 @@ class BounceEmailTest < Test::Unit::TestCase
       mail = File.join(File.dirname(__FILE__), 'bounces', "tt_bounce_#{file}.txt")
       bounce = BounceEmail::Mail.new Mail.read(mail)
       assert_not_nil bounce.original_mail
+      assert_not_nil bounce.original_mail.message_id
+      assert_not_nil bounce.original_mail.to
+      assert_not_nil bounce.original_mail.from
     end
+  end
+
+  def test_original_message_with_subject
+    bounce = test_bounce('tt_bounce_04')
+    assert_not_nil bounce.original_mail.subject
   end
 
   private
