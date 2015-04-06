@@ -237,7 +237,8 @@ module BounceEmail
     def extract_original_message_after_delimiter(mail, delimiter_index)
       delimiter = INLINE_MESSAGE_BEGIN_DELIMITERS[delimiter_index]
       message = mail.body.to_s.split(delimiter).last
-      message.split(INLINE_MESSAGE_END_DELIMITER).first.strip if message.match(INLINE_MESSAGE_END_DELIMITER)
+      message = message.split(INLINE_MESSAGE_END_DELIMITER).first.strip if message.match(INLINE_MESSAGE_END_DELIMITER)
+      message
     end
 
     def extract_and_assign_fields_from_original_mail(mail)
