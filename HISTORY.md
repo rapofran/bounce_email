@@ -1,3 +1,7 @@
+## 0.2.5
+
+* Fix parsing of original mail (@saghaulor, livebg/bounce_email#6)
+
 ## 0.2.4
 
 * Parse and reassign message-ID, to, from, and subject from original mail
