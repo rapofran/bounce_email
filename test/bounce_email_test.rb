@@ -141,6 +141,14 @@ class BounceEmailTest < Test::Unit::TestCase
     assert_not_nil bounce.original_mail.subject
   end
 
+  def test_original_message_with_bounced_gmail
+    bounce = test_bounce('undeliverable_gmail')
+    assert_not_nil bounce.original_mail
+    assert_not_nil bounce.original_mail.message_id
+    assert_not_nil bounce.original_mail.to
+    assert_not_nil bounce.original_mail.from
+    assert_not_nil bounce.original_mail.subject
+  end
   private
 
   def load_email(name, prefix = 'fixtures')
