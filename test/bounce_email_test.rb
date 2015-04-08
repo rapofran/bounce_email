@@ -108,13 +108,25 @@ class BounceEmailTest < Test::Unit::TestCase
   end
 
   def test_original_message_with_multipart_mails
-    multipart_mails = %w(03 04 05 07 10 11 13 15 16 23 24)
+    multipart_mails = %w(05 07 10 11 13 15 16 23 24)
     multipart_mails.map do |file|
       mail = File.join(File.dirname(__FILE__), 'bounces', "tt_bounce_#{file}.txt")
       bounce = BounceEmail::Mail.new Mail.read(mail)
       assert_not_nil bounce.original_mail
       assert_not_nil bounce.original_mail.message_id
       assert_not_nil bounce.original_mail.to
+      assert_not_nil bounce.original_mail.from
+    end
+  end
+
+  def test_original_message_with_multipart_mails_without_to_field
+    multipart_mails = %w(03 04)
+    multipart_mails.map do |file|
+      mail = File.join(File.dirname(__FILE__), 'bounces', "tt_bounce_#{file}.txt")
+      bounce = BounceEmail::Mail.new Mail.read(mail)
+      assert_not_nil bounce.original_mail
+      assert_not_nil bounce.original_mail.message_id
+      assert_equal [], bounce.original_mail.to
       assert_not_nil bounce.original_mail.from
     end
   end
