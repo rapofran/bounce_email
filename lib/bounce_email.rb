@@ -225,7 +225,7 @@ module BounceEmail
         elsif i = index_of_original_message_delimiter(mail)
           ::Mail.new(extract_original_message_after_delimiter(mail, i))
         end
-      return extract_and_assign_fields_from_original_mail(original) if original
+      return extract_and_assign_fields_from(mail, original) if original
     rescue => e
       nil
     end
@@ -241,16 +241,21 @@ module BounceEmail
       message
     end
 
-    def extract_and_assign_fields_from_original_mail(mail)
-      if mail.message_id.nil?
-        mail.add_message_id extract_field_from(mail, 'Message-ID:')
+    def extract_and_assign_fields_from(bounce, original)
+      if original.message_id.nil?
+        original.add_message_id extract_field_from(original, /^Message-ID:/)
       end
 
-      mail.from ||= extract_field_from(mail, 'From:')
-      mail.to ||= extract_field_from(mail, 'To:')
-      mail.subject ||= extract_field_from(mail, 'Subject:')
+      original.from ||= extract_field_from(original, /^From:/)
+      original.to ||= (extract_original_to_field_from(bounce) || extract_field_from(original, /^To:/))
+      original.subject ||= extract_field_from(original, /^Subject:/)
 
-      mail
+      original
+    end
+
+    def extract_original_to_field_from(mail)
+      header = mail.header["X-Original-To"]
+      header.value if header && header.value
     end
 
     def extract_field_from(mail, field_name)
