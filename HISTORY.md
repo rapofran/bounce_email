@@ -1,3 +1,5 @@
+* Properly extract "To" from original email (@saghaulor, livebg/bounce_email#8)
+
 ## 0.2.5
 
 * Fix parsing of original mail (@saghaulor, livebg/bounce_email#6)
