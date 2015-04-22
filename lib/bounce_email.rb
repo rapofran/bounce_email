@@ -247,14 +247,17 @@ module BounceEmail
       end
 
       original.from ||= extract_field_from(original, /^From:/)
-      original.to ||= (extract_original_to_field_from(bounce) || extract_field_from(original, /^To:/))
+
+      original.to ||= (extract_original_to_field_from_header(bounce) ||
+                       extract_field_from(original, /^To:/))
+
       original.subject ||= extract_field_from(original, /^Subject:/)
 
       original
     end
 
-    def extract_original_to_field_from(mail)
-      header = mail.header["X-Original-To"]
+    def extract_original_to_field_from_header(mail)
+      header = mail.header["X-Failed-Recipients"]
       header.value if header && header.value
     end
 
