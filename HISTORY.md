@@ -1,3 +1,6 @@
+## 0.2.6
+
+* Replaced 'X-Original-To' header with 'X-Failed-Recipients' (@saghaulor, livebg/bounce_email#10)
 * Properly extract "To" from original email (@saghaulor, livebg/bounce_email#8)
 
 ## 0.2.5
