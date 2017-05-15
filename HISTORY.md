@@ -1,3 +1,7 @@
+## 0.2.7
+
+* Extract and save the bounced email's date field in the email original (@blainejohnson17, livebg/bounce_email#11)
+
 ## 0.2.6
 
 * Replaced 'X-Original-To' header with 'X-Failed-Recipients' (@saghaulor, livebg/bounce_email#10)
