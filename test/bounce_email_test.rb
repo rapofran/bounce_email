@@ -161,6 +161,12 @@ class BounceEmailTest < Test::Unit::TestCase
     assert_not_nil bounce.original_mail.from
     assert_not_nil bounce.original_mail.subject
   end
+
+  def test_original_message_with_date
+    bounce = test_bounce('tt_bounce_04')
+    assert_not_nil bounce.original_mail.date
+  end
+
   private
 
   def load_email(name, prefix = 'fixtures')

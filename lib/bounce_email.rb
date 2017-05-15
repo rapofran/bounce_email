@@ -253,6 +253,8 @@ module BounceEmail
 
       original.subject ||= extract_field_from(original, /^Subject:/)
 
+      original.date ||= extract_field_from(original, /^Date:/)
+
       original
     end
 
