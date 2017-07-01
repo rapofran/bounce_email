@@ -108,7 +108,7 @@ class BounceEmailTest < Test::Unit::TestCase
   end
 
   def test_original_message_with_multipart_mails
-    multipart_mails = %w(05 07 10 11 13 15 16 23 24)
+    multipart_mails = %w(04 05 07 10 11 13 15 16 23 24)
     multipart_mails.map do |file|
       mail = File.join(File.dirname(__FILE__), 'bounces', "tt_bounce_#{file}.txt")
       bounce = BounceEmail::Mail.new Mail.read(mail)
