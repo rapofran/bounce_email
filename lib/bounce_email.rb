@@ -221,7 +221,7 @@ module BounceEmail
     def get_original_mail(mail) #worked alright for me, for sure this has to be extended
       original =
         if mail.multipart?
-          ::Mail.new(mail.parts.last)
+          ::Mail.new(mail.parts.last.body)
         elsif i = index_of_original_message_delimiter(mail)
           ::Mail.new(extract_original_message_after_delimiter(mail, i))
         end
@@ -242,19 +242,7 @@ module BounceEmail
     end
 
     def extract_and_assign_fields_from(bounce, original)
-      if original.message_id.nil?
-        original.add_message_id extract_field_from(original, /^Message-ID:/)
-      end
-
-      original.from ||= extract_field_from(original, /^From:/)
-
-      original.to ||= (extract_original_to_field_from_header(bounce) ||
-                       extract_field_from(original, /^To:/))
-
-      original.subject ||= extract_field_from(original, /^Subject:/)
-
-      original.date ||= extract_field_from(original, /^Date:/)
-
+      original.to ||= extract_original_to_field_from_header(bounce)
       original
     end
 
