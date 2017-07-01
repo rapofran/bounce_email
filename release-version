@@ -3,4 +3,5 @@
 NAME="bounce_email"
 
 git push
+git push --tags
 gem build $NAME.gemspec && gem push $NAME-* && rm -f $NAME-*
