@@ -250,15 +250,5 @@ module BounceEmail
       header = mail.header["X-Failed-Recipients"]
       header.value if header && header.value
     end
-
-    def extract_field_from(mail, field_name)
-      lines = original_mail_body_lines(mail)
-      field = lines.detect { |line| line.match field_name }
-      field.split(':', 2).last.strip if field
-    end
-
-    def original_mail_body_lines(mail)
-      @original_mail_body_lines ||= mail.body.to_s.split(/(?:\r\n|\n)+/)
-    end
   end
 end
