@@ -1,3 +1,7 @@
+## 0.2.8
+
+* Properly parse the email original when it's attached in the last part of a multipart bounce email (@blainejohnson17, livebg/bounce_email#12). Read more about [the issue and the reasoning behind the fix here](https://github.com/livebg/bounce_email/pull/12#issuecomment-312431646).
+
 ## 0.2.7
 
 * Extract and save the bounced email's date field in the email original (@blainejohnson17, livebg/bounce_email#11)
